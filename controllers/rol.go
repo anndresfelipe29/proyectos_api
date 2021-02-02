@@ -3,11 +3,12 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/proyectos_api/models"
 	"strconv"
 	"strings"
 
-	beego "github.com/beego/beego/v2/server/web"
+	"github.com/anndresfelipe29/proyectos_api/models"
+
+	"github.com/astaxie/beego"
 )
 
 // RolController operations for Rol
