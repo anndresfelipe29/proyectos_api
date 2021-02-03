@@ -278,18 +278,24 @@
                 }
             }
         },
-        "/proyecto/{id}": {
-            "get": {
+        "/proyecto/completar/{id}": {
+            "put": {
                 "tags": [
                     "proyecto"
                 ],
-                "description": "get Proyecto by id",
-                "operationId": "ProyectoController.Get One",
+                "description": "update the Proyecto",
+                "operationId": "ProyectoController.Put",
                 "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token",
+                        "type": "string"
+                    },
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "The key for staticblock",
+                        "description": "The id you want to update",
                         "required": true,
                         "type": "string"
                     }
@@ -302,10 +308,12 @@
                         }
                     },
                     "403": {
-                        "description": ":id is empty"
+                        "description": ":id is not int"
                     }
                 }
-            },
+            }
+        },
+        "/proyecto/{id}": {
             "put": {
                 "tags": [
                     "proyecto"
@@ -617,6 +625,12 @@
                 "operationId": "TareaController.Post",
                 "parameters": [
                     {
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token",
+                        "type": "string"
+                    },
+                    {
                         "in": "body",
                         "name": "body",
                         "description": "body for Tarea content",
@@ -672,6 +686,12 @@
                 "operationId": "TareaController.Put",
                 "parameters": [
                     {
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token",
+                        "type": "string"
+                    },
+                    {
                         "in": "path",
                         "name": "id",
                         "description": "The id you want to update",
@@ -707,6 +727,12 @@
                 "description": "delete the Tarea",
                 "operationId": "TareaController.Delete",
                 "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Authorization",
+                        "description": "Token",
+                        "type": "string"
+                    },
                     {
                         "in": "path",
                         "name": "id",
@@ -992,8 +1018,8 @@
                     "type": "string"
                 },
                 "FechaEjecucion": {
-                    "type": "integer",
-                    "format": "int32"
+                    "type": "string",
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",

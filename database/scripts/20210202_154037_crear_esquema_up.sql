@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS proyectos.tarea (
 	id serial NOT NULL,
 	nombre varchar(100) NOT NULL,
 	descripcion varchar(800),
-	fecha_ejecucion smallint,
+	fecha_ejecucion date,
 	id_proyecto integer,
 	id_estado integer,
 	CONSTRAINT tarea_pk PRIMARY KEY (id)

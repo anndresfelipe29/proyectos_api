@@ -29,6 +29,7 @@ func (c *TareaController) URLMapping() {
 // Post ...
 // @Title Post
 // @Description create Tarea
+// @Param   Authorization   header  string  false "Token"
 // @Param	body		body 	models.Tarea	true		"body for Tarea content"
 // @Success 201 {int} models.Tarea
 // @Failure 403 body is empty
@@ -46,10 +47,14 @@ func (c *TareaController) Post() {
 				c.Ctx.Output.SetStatus(201)
 				c.Data["json"] = v
 			} else {
+				logs.Error(err)
 				c.Data["json"] = err.Error()
+				c.Abort("401")
 			}
 		} else {
+			logs.Error(err)
 			c.Data["json"] = err.Error()
+			c.Abort("401")
 		}
 	}
 
@@ -141,6 +146,7 @@ func (c *TareaController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the Tarea
+// @Param   Authorization   header  string  false "Token"
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.Tarea	true		"body for Tarea content"
 // @Success 200 {object} models.Tarea
@@ -173,6 +179,7 @@ func (c *TareaController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the Tarea
+// @Param   Authorization   header  string  false "Token"
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty

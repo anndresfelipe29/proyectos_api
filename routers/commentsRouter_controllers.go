@@ -70,11 +70,20 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	/*beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:ProyectoController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:ProyectoController"],
+	beego.ControllerComments{
+		Method:           "GetOne",
+		Router:           "/:id",
+		AllowHTTPMethods: []string{"get"},
+		MethodParams:     param.Make(),
+		Filters:          nil,
+		Params:           nil})*/
+
 	beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:ProyectoController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:ProyectoController"],
 		beego.ControllerComments{
-			Method:           "GetOne",
-			Router:           "/:id",
-			AllowHTTPMethods: []string{"get"},
+			Method:           "CompletarProyecto",
+			Router:           "/completar/:id",
+			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
 			Params:           nil})

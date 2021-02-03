@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/beego/beego/v2/client/orm"
 )
@@ -13,7 +14,7 @@ type Tarea struct {
 	Id             int       `orm:"column(id);pk;auto"`
 	Nombre         string    `orm:"column(nombre)"`
 	Descripcion    string    `orm:"column(descripcion);null"`
-	FechaEjecucion int16     `orm:"column(fecha_ejecucion);null"`
+	FechaEjecucion time.Time `orm:"column(fecha_ejecucion);type(date);null"`
 	IdProyecto     *Proyecto `orm:"column(id_proyecto);rel(fk)"`
 	IdEstado       *Estado   `orm:"column(id_estado);rel(fk)"`
 }
@@ -44,6 +45,32 @@ func GetTareaById(id int) (v *Tarea, err error) {
 	}
 	return nil, err
 }
+
+/*func GetTareaByProyecto(idProyecto int) (v *[]Usuario, num int, err error) {
+	o := orm.NewOrm()
+	//v = []Usuario{}
+	if num, err := o.QueryTable("tarea").Filter("id_proyecto", idProyecto).All(v); err != nil {
+		return nil, 0, err
+	} else {
+		if len(fields) == 0 {
+			for _, v := range l {
+				ml = append(ml, v)
+			}
+		} else {
+			// trim unused fields
+			for _, v := range l {
+				m := make(map[string]interface{})
+				val := reflect.ValueOf(v)
+				for _, fname := range fields {
+					m[fname] = val.FieldByName(fname).Interface()
+				}
+				ml = append(ml, m)
+			}
+		}
+		return v, int(num), nil
+	}
+
+}*/
 
 // GetAllTarea retrieves all Tarea matches certain condition. Returns empty list if
 // no records exist

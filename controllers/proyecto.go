@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -22,7 +23,8 @@ var et = token.EasyToken{}
 // URLMapping ...
 func (c *ProyectoController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("GetOne", c.GetOne)
+	//c.Mapping("GetOne", c.GetOne)
+	c.Mapping("CompletarProyecto", c.CompletarProyecto)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
@@ -43,15 +45,19 @@ func (c *ProyectoController) Post() {
 		c.Abort("401")
 	}
 	if role {
+
 		var v models.Proyecto
 		if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 			if _, err := models.AddProyecto(&v); err == nil {
+				fmt.Println("entra aca")
 				c.Ctx.Output.SetStatus(201)
 				c.Data["json"] = v
 			} else {
+				logs.Error(err)
 				c.Data["json"] = err.Error()
 			}
 		} else {
+			logs.Error(err)
 			c.Data["json"] = err.Error()
 		}
 	}
@@ -61,7 +67,7 @@ func (c *ProyectoController) Post() {
 	c.ServeJSON()
 }
 
-// GetOne ...
+/*// GetOne ...
 // @Title Get One
 // @Description get Proyecto by id
 // @Param	id		path 	string	true		"The key for staticblock"
@@ -78,7 +84,7 @@ func (c *ProyectoController) GetOne() {
 		c.Data["json"] = v
 	}
 	c.ServeJSON()
-}
+}*/
 
 // GetAll ...
 // @Title Get All
@@ -205,3 +211,80 @@ func (c *ProyectoController) Delete() {
 
 	c.ServeJSON()
 }
+
+// Put ...
+// @Title Put
+// @Description update the Proyecto
+// @Param   Authorization   header  string  false "Token"
+// @Param	id		path 	string	true		"The id you want to update"
+// @Success 200 {object} models.Proyecto
+// @Failure 403 :id is not int
+// @router /completar/:id [put]
+func (c *ProyectoController) CompletarProyecto() {
+
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
+	}
+	if role {
+		idStr := c.Ctx.Input.Param(":id")
+		//id, _ := strconv.Atoi(idStr)
+		//v := models.Proyecto{Id: id}
+		//fmt.Println(models.GetTareaByProyecto(id))
+		v := make(map[string]string)
+		x := []string{}
+		v["id_proyecto"] = idStr
+		tareas1, err := models.GetAllTarea(v, x, x, x, -1, -1)
+		if err != nil {
+			logs.Error(err)
+			c.Abort("401")
+		}
+		v["id_estado"] = "2"
+		tareas2, err := models.GetAllTarea(v, x, x, x, -1, -1)
+		if err != nil {
+			logs.Error(err)
+			c.Abort("401")
+		}
+		fmt.Println(len(tareas1), len(tareas2))
+		if len(tareas1) == len(tareas2) {
+			id, _ := strconv.Atoi(idStr)
+			/*v := models.Proyecto{
+				Id:       id,
+				IdEstado: &models.Estado{Id: 4},
+			}*/
+			if v, err := models.GetProyectoById(id); err == nil {
+				v.IdEstado = &models.Estado{Id: 4}
+				fmt.Println("entro")
+				fmt.Println(v)
+				if err := models.UpdateProyectoById(v); err == nil {
+					c.Data["json"] = "OK"
+				} else {
+					c.Data["json"] = err.Error()
+					c.Abort("401")
+				}
+			} else {
+				logs.Error(v, err)
+				c.Abort("401")
+			}
+
+		}
+
+	}
+
+	c.ServeJSON()
+}
+
+/*
+{
+
+	"IdEstado": {
+
+	  "Id": 2,
+
+	},
+
+
+  }
+  eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTIzMjg5MTksImlzcyI6ImZlbGlwZSIsInN1YiI6IjEifQ.jEyJ136J-UtEP2PwmCDYSn60MAxmo9cFmPbjcACNjKzVWUUoQ6uQaNHrU9FUp7h_SI8lVHg0xADa55FgjuUPh9jSpJkIRQTRkTnr_w5ppxwOUsu8cc8ZG4mUCtfw4JDhYk4weoyRwp7XjgJLZO9GyLJbAkYaRHhKtBnY_nyQnjH40yNfV9GqXQjI3IDCvbaL6CMWD5xxbBGpMVkK29q3nMV196KwjDJTgnsx_mWv-kWoEQixz28kWeYx9PRUM_-XE_PV690XxScldyAbdPILAty_Ab8GTp22He35_2fcQT5geqbazDLstJZ8FZzc8dG-YKijs2gXMF16kgC8ONL3-w
+*/
