@@ -23,7 +23,8 @@ docker-compose up
 ## Uso
 Puede usar este aplicativo accediento a:
 - Endpoint base http://localhost:8092  y agregar las rutas de acceso a cada controlador.
-- Url de la aplicación swagger que facilita el uso del microservicio http://localhost:8092/swagger-ui.html#
+- Url de la aplicación swagger que facilita el uso del microservicio http://localhost:8092/swagger/
+- ### Usuario por defecto admin, contraseña por defecto admin
 
 ## Funcionalidades
 
