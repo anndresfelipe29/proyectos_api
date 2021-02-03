@@ -10,7 +10,7 @@ import (
 )
 
 type Usuario struct {
-	Id         int    `orm:"column(id);pk"`
+	Id         int    `orm:"column(id);pk;auto"`
 	Usuario    string `orm:"column(usuario)"`
 	Contrasena string `orm:"column(contrasena)"`
 	IdRol      *Rol   `orm:"column(id_rol);rel(fk)"`
@@ -44,12 +44,25 @@ func GetUsuarioById(id int) (v *Usuario, err error) {
 	return nil, err
 }
 
+// GetUsuarioById retrieves Usuario by Id. Returns error if
+// Id doesn't exist
+func GetUsuarioByUsuario(usuario string) (v *Usuario, err error) {
+	o := orm.NewOrm()
+	v = &Usuario{}
+	if err := o.QueryTable("usuario").Filter("usuario", usuario).One(v); err != nil {
+		return nil, err
+	} else {
+		return v, nil
+	}
+
+}
+
 // GetAllUsuario retrieves all Usuario matches certain condition. Returns empty list if
 // no records exist
 func GetAllUsuario(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Usuario))
+	qs := o.QueryTable(new(Usuario)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute

@@ -20,3 +20,6 @@ swagger/lib/
 .env
 proyectos_api
 proyectos_api.exe
+
+mem-6675.memprof
+.memprof

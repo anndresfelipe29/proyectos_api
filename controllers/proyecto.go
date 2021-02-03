@@ -7,14 +7,17 @@ import (
 	"strings"
 
 	"github.com/anndresfelipe29/proyectos_api/models"
-
+	"github.com/anndresfelipe29/proyectos_api/token"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // ProyectoController operations for Proyecto
 type ProyectoController struct {
 	beego.Controller
 }
+
+var et = token.EasyToken{}
 
 // URLMapping ...
 func (c *ProyectoController) URLMapping() {
@@ -28,22 +31,33 @@ func (c *ProyectoController) URLMapping() {
 // Post ...
 // @Title Post
 // @Description create Proyecto
+// @Param   Authorization   header  string  false "Token"
 // @Param	body		body 	models.Proyecto	true		"body for Proyecto content"
 // @Success 201 {int} models.Proyecto
 // @Failure 403 body is empty
 // @router / [post]
 func (c *ProyectoController) Post() {
-	var v models.Proyecto
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddProyecto(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
+	}
+	if role {
+		var v models.Proyecto
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+			if _, err := models.AddProyecto(&v); err == nil {
+				c.Ctx.Output.SetStatus(201)
+				c.Data["json"] = v
+			} else {
+				c.Data["json"] = err.Error()
+			}
 		} else {
 			c.Data["json"] = err.Error()
 		}
-	} else {
-		c.Data["json"] = err.Error()
 	}
+
+	//fmt.Println(et.ValidateRoleToken(tokenString, 1))
+
 	c.ServeJSON()
 }
 
@@ -132,41 +146,62 @@ func (c *ProyectoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the Proyecto
+// @Param   Authorization   header  string  false "Token"
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.Proyecto	true		"body for Proyecto content"
 // @Success 200 {object} models.Proyecto
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *ProyectoController) Put() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Proyecto{Id: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateProyectoById(&v); err == nil {
-			c.Data["json"] = "OK"
+
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
+	}
+	if role {
+		idStr := c.Ctx.Input.Param(":id")
+		id, _ := strconv.Atoi(idStr)
+		v := models.Proyecto{Id: id}
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+			if err := models.UpdateProyectoById(&v); err == nil {
+				c.Data["json"] = "OK"
+			} else {
+				c.Data["json"] = err.Error()
+			}
 		} else {
 			c.Data["json"] = err.Error()
 		}
-	} else {
-		c.Data["json"] = err.Error()
+
 	}
+
 	c.ServeJSON()
 }
 
 // Delete ...
 // @Title Delete
 // @Description delete the Proyecto
+// @Param   Authorization   header  string  false "Token"
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *ProyectoController) Delete() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteProyecto(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
 	}
+	if role {
+		idStr := c.Ctx.Input.Param(":id")
+		id, _ := strconv.Atoi(idStr)
+		if err := models.DeleteProyecto(id); err == nil {
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
+	}
+
 	c.ServeJSON()
 }

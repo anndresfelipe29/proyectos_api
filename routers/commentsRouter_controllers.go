@@ -205,11 +205,19 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	/*beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"],
+	beego.ControllerComments{
+		Method:           "GetOne",
+		Router:           "/:id",
+		AllowHTTPMethods: []string{"get"},
+		MethodParams:     param.Make(),
+		Filters:          nil,
+		Params:           nil})*/
 	beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"],
 		beego.ControllerComments{
-			Method:           "GetOne",
-			Router:           "/:id",
-			AllowHTTPMethods: []string{"get"},
+			Method:           "CambiarContrasena",
+			Router:           "/:password/:passwordNew ",
+			AllowHTTPMethods: []string{"put"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
 			Params:           nil})
@@ -225,9 +233,27 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"],
 		beego.ControllerComments{
+			Method:           "DeshabilitarUsuario",
+			Router:           "/:username/:activo",
+			AllowHTTPMethods: []string{"put"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:UsuarioController"],
+		beego.ControllerComments{
 			Method:           "Delete",
 			Router:           "/:id",
 			AllowHTTPMethods: []string{"delete"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:TokenController"] = append(beego.GlobalControllerRouter["github.com/anndresfelipe29/proyectos_api/controllers:TokenController"],
+		beego.ControllerComments{
+			Method:           "GetToken",
+			Router:           "/",
+			AllowHTTPMethods: []string{"post"},
 			MethodParams:     param.Make(),
 			Filters:          nil,
 			Params:           nil})

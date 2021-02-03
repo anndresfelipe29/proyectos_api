@@ -10,7 +10,7 @@ import (
 )
 
 type Tarea struct {
-	Id             int       `orm:"column(id);pk"`
+	Id             int       `orm:"column(id);pk;auto"`
 	Nombre         string    `orm:"column(nombre)"`
 	Descripcion    string    `orm:"column(descripcion);null"`
 	FechaEjecucion int16     `orm:"column(fecha_ejecucion);null"`

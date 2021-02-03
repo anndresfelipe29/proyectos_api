@@ -3,11 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/anndresfelipe29/proyectos_api/models"
 	"strconv"
 	"strings"
 
+	"github.com/anndresfelipe29/proyectos_api/models"
+
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // TareaController operations for Tarea
@@ -32,17 +34,25 @@ func (c *TareaController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *TareaController) Post() {
-	var v models.Tarea
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddTarea(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
+	}
+	if role {
+		var v models.Tarea
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+			if _, err := models.AddTarea(&v); err == nil {
+				c.Ctx.Output.SetStatus(201)
+				c.Data["json"] = v
+			} else {
+				c.Data["json"] = err.Error()
+			}
 		} else {
 			c.Data["json"] = err.Error()
 		}
-	} else {
-		c.Data["json"] = err.Error()
 	}
+
 	c.ServeJSON()
 }
 
@@ -137,18 +147,26 @@ func (c *TareaController) GetAll() {
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *TareaController) Put() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	v := models.Tarea{Id: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateTareaById(&v); err == nil {
-			c.Data["json"] = "OK"
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
+	}
+	if role {
+		idStr := c.Ctx.Input.Param(":id")
+		id, _ := strconv.Atoi(idStr)
+		v := models.Tarea{Id: id}
+		if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+			if err := models.UpdateTareaById(&v); err == nil {
+				c.Data["json"] = "OK"
+			} else {
+				c.Data["json"] = err.Error()
+			}
 		} else {
 			c.Data["json"] = err.Error()
 		}
-	} else {
-		c.Data["json"] = err.Error()
 	}
+
 	c.ServeJSON()
 }
 
@@ -160,12 +178,20 @@ func (c *TareaController) Put() {
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *TareaController) Delete() {
-	idStr := c.Ctx.Input.Param(":id")
-	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteTarea(id); err == nil {
-		c.Data["json"] = "OK"
-	} else {
-		c.Data["json"] = err.Error()
+	role, _, err := et.ValidateRoleToken(c.Ctx.Input.Header("Authorization"), 2)
+	if err != nil {
+		logs.Error(err)
+		c.Abort("401")
 	}
+	if role {
+		idStr := c.Ctx.Input.Param(":id")
+		id, _ := strconv.Atoi(idStr)
+		if err := models.DeleteTarea(id); err == nil {
+			c.Data["json"] = "OK"
+		} else {
+			c.Data["json"] = err.Error()
+		}
+	}
+
 	c.ServeJSON()
 }

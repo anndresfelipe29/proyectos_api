@@ -171,6 +171,10 @@ paths:
       description: create Proyecto
       operationId: ProyectoController.Post
       parameters:
+      - in: header
+        name: Authorization
+        description: Token
+        type: string
       - in: body
         name: body
         description: body for Proyecto content
@@ -207,6 +211,10 @@ paths:
       description: update the Proyecto
       operationId: ProyectoController.Put
       parameters:
+      - in: header
+        name: Authorization
+        description: Token
+        type: string
       - in: path
         name: id
         description: The id you want to update
@@ -231,6 +239,10 @@ paths:
       description: delete the Proyecto
       operationId: ProyectoController.Delete
       parameters:
+      - in: header
+        name: Authorization
+        description: Token
+        type: string
       - in: path
         name: id
         description: The id you want to delete
@@ -471,11 +483,32 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /token/:
+    post:
+      tags:
+      - token
+      description: Get token from user session
+      operationId: TokenController.getToken
+      parameters:
+      - in: query
+        name: username
+        description: The username for get token
+        required: true
+        type: string
+      - in: query
+        name: password
+        description: The password for get token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} Obtain Token'
   /usuario/:
     get:
       tags:
       - usuario
-      description: get Usuario
+      description: Puede ver a los usuarios y su información, no requiere token, es
+        para facilitar el uso de los usuarios
       operationId: UsuarioController.Get All
       parameters:
       - in: query
@@ -516,6 +549,10 @@ paths:
       description: create Usuario
       operationId: UsuarioController.Post
       parameters:
+      - in: header
+        name: Authorization
+        description: Token
+        type: string
       - in: body
         name: body
         description: body for Usuario content
@@ -527,65 +564,58 @@ paths:
           description: '{int} models.Usuario'
         "403":
           description: body is empty
-  /usuario/{id}:
-    get:
-      tags:
-      - usuario
-      description: get Usuario by id
-      operationId: UsuarioController.Get One
-      parameters:
-      - in: path
-        name: id
-        description: The key for staticblock
-        required: true
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.Usuario'
-        "403":
-          description: :id is empty
+  /usuario/{password}/{passwordNew}:
     put:
       tags:
       - usuario
-      description: update the Usuario
-      operationId: UsuarioController.Put
+      description: Permite cambiar la contraseña de un usuario un usuario
+      operationId: UsuarioController.CambiarContrasena
       parameters:
+      - in: header
+        name: Authorization
+        description: Token
+        type: string
       - in: path
-        name: id
-        description: The id you want to update
+        name: password
+        description: El nombre de usuario a cambiar
         required: true
         type: string
-      - in: body
-        name: body
-        description: body for Usuario content
+      - in: path
+        name: passwordNew
+        description: El nombre de usuario a cambiar
         required: true
-        schema:
-          $ref: '#/definitions/models.Usuario'
+        type: string
       responses:
         "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.Usuario'
+          description: Ok
         "403":
           description: :id is not int
-    delete:
+  /usuario/{username}/{activo}:
+    put:
       tags:
       - usuario
-      description: delete the Usuario
-      operationId: UsuarioController.Delete
+      description: Deshabilitar Usuario permite habilitar o inhabilitar un usuario
+      operationId: UsuarioController.DeshabilitarUsuario
       parameters:
+      - in: header
+        name: Authorization
+        description: Token
+        type: string
       - in: path
-        name: id
-        description: The id you want to delete
+        name: username
+        description: El nombre de usuario a cambiar
         required: true
         type: string
+      - in: path
+        name: activo
+        description: true para habiliar y false para deshabilitar
+        required: true
+        type: boolean
       responses:
         "200":
-          description: '{string} delete success!'
+          description: Ok
         "403":
-          description: id is empty
+          description: :id is not int
 definitions:
   models.Estado:
     title: Estado
@@ -674,6 +704,9 @@ tags:
 - name: rol
   description: |
     RolController operations for Rol
+- name: token
+  description: |
+    EstadoController operations for Estado
 - name: usuario
   description: |
     UsuarioController operations for Usuario

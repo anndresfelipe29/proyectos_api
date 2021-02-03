@@ -40,6 +40,12 @@ func init() {
 			),
 		),
 
+		beego.NSNamespace("/token",
+			beego.NSInclude(
+				&controllers.TokenController{},
+			),
+		),
+
 		beego.NSNamespace("/usuario",
 			beego.NSInclude(
 				&controllers.UsuarioController{},

@@ -11,7 +11,7 @@ import (
 )
 
 type Proyecto struct {
-	Id                int       `orm:"column(id);pk"`
+	Id                int       `orm:"column(id);pk;auto"`
 	Nombre            string    `orm:"column(nombre)"`
 	Descripcion       string    `orm:"column(descripcion)"`
 	FechaInicio       time.Time `orm:"column(fecha_inicio);type(date);null"`
@@ -142,6 +142,7 @@ func UpdateProyectoById(m *Proyecto) (err error) {
 // DeleteProyecto deletes Proyecto by Id and returns error if
 // the record to be deleted doesn't exist
 func DeleteProyecto(id int) (err error) {
+
 	o := orm.NewOrm()
 	v := Proyecto{Id: id}
 	// ascertain id exists in the database

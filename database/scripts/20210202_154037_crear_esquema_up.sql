@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS proyectos.proyecto (
 
 );
 
-CREATE TABLE proyectos.estado (
+CREATE TABLE IF NOT EXISTS proyectos.estado (
 	id serial NOT NULL,
 	nombre varchar(100) NOT NULL,
 	descripcion varchar(800),
@@ -22,7 +22,7 @@ CREATE TABLE proyectos.estado (
 
 );
 
-CREATE TABLE proyectos.tarea (
+CREATE TABLE IF NOT EXISTS proyectos.tarea (
 	id serial NOT NULL,
 	nombre varchar(100) NOT NULL,
 	descripcion varchar(800),
@@ -33,17 +33,18 @@ CREATE TABLE proyectos.tarea (
 
 );
 
-CREATE TABLE proyectos.usuario (
+CREATE TABLE IF NOT EXISTS proyectos.usuario (
 	id serial NOT NULL,
 	usuario varchar(50) NOT NULL,
 	contrasena varchar(50) NOT NULL,
 	id_rol integer,
 	activo bool NOT NULL,
-	CONSTRAINT usuario_pk PRIMARY KEY (id)
+	CONSTRAINT usuario_pk PRIMARY KEY (id),
+	CONSTRAINT usuario_uk UNIQUE (usuario)
 
 );
 
-CREATE TABLE proyectos.rol (
+CREATE TABLE IF NOT EXISTS proyectos.rol (
 	id serial NOT NULL,
 	nombre varchar(50) NOT NULL,
 	descripcion varchar(200),
