@@ -2,7 +2,8 @@
 Proyecto backend realizado en Golang con el framework Beego que usa Postgresql como persistencia.
 El proyecto usa tokens JWT para hacer seguro el acceso a cada endpoint que lo requiere, los metodos get no requieren token.
 La idea de la api es poder llevar el registro de proyectos y tareas por medio de dos roles, administrador y operario, donde operario tiene algunas limitaciones de acceso.
-
+## Modelo de datos
+![Esquema de datos](https://i.imgur.com/bUKKF0H.png)
 ## Ejecución en repositorio local
 
 Requerimientos:
